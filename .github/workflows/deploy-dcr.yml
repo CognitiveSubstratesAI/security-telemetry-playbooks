@@ -1,0 +1,109 @@
+name: Deploy data collection rules
+
+# DCRs cannot be deployed through Microsoft Sentinel repositories, which handle
+# analytics rules, hunting queries, workbooks, parsers, playbooks, automation
+# rules and watchlists only. They need their own pipeline. This is it.
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'playbooks/01-sentinel-log-onboarding/dcr/**'
+      - 'playbooks/01-sentinel-log-onboarding/bicep/**'
+      - 'playbooks/01-sentinel-log-onboarding/xpath/**'
+      - 'playbooks/01-sentinel-log-onboarding/tests/**'
+      - '.github/workflows/deploy-dcr.yml'
+  pull_request:
+    paths:
+      - 'playbooks/01-sentinel-log-onboarding/**'
+  workflow_dispatch:
+
+# OIDC federated credentials. No client secret in the repository, and nothing
+# to rotate.
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  PLAYBOOK: playbooks/01-sentinel-log-onboarding
+
+jobs:
+  validate:
+    name: Validate and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Lint Bicep
+        run: az bicep build --file $PLAYBOOK/bicep/main.bicep --stdout > /dev/null
+
+      - name: Run Pester tests
+        shell: pwsh
+        run: |
+          Install-Module Pester -Force -SkipPublisherCheck -Scope CurrentUser
+          $cfg = New-PesterConfiguration
+          $cfg.Run.Path = "$env:PLAYBOOK/tests"
+          $cfg.Output.Verbosity = 'Detailed'
+          $cfg.Run.Exit = $true
+          Invoke-Pester -Configuration $cfg
+
+  what-if:
+    name: What-if against the target subscription
+    needs: validate
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    environment: sentinel-nonprod
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # The reviewer sees the real change before approving it. A DCR diff is
+      # not obvious from the JSON alone once transformations are involved.
+      - uses: azure/bicep-deploy@v2
+        with:
+          type: deployment
+          operation: validate
+          name: dcr-${{ github.run_id }}
+          scope: resourceGroup
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          resource-group-name: ${{ vars.RESOURCE_GROUP }}
+          template-file: playbooks/01-sentinel-log-onboarding/bicep/main.bicep
+          parameters: |
+            {
+              "workspaceResourceId": "${{ secrets.WORKSPACE_RESOURCE_ID }}"
+            }
+
+  deploy:
+    name: Deploy
+    needs: validate
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment: sentinel-prod   # protection rules gate this, not the branch alone
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # azure/bicep-deploy@v2 replaces the deprecated azure/arm-deploy.
+      - uses: azure/bicep-deploy@v2
+        with:
+          type: deployment
+          operation: create
+          name: dcr-${{ github.run_id }}
+          scope: resourceGroup
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          resource-group-name: ${{ vars.RESOURCE_GROUP }}
+          template-file: playbooks/01-sentinel-log-onboarding/bicep/main.bicep
+          parameters: |
+            {
+              "workspaceResourceId": "${{ secrets.WORKSPACE_RESOURCE_ID }}"
+            }
