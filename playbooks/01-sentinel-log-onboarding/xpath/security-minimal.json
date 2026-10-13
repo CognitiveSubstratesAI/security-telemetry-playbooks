@@ -1,0 +1,9 @@
+[
+  "Security!*[System[(EventID=1102 or EventID=4624 or EventID=4625 or EventID=4657 or EventID=4663 or EventID=4688)]]",
+  "Security!*[System[(EventID=4700 or EventID=4702 or EventID=4719 or EventID=4720 or EventID=4722 or EventID=4723)]]",
+  "Security!*[System[(EventID=4724 or EventID=4727 or EventID=4728 or EventID=4732 or EventID=4735 or EventID=4737)]]",
+  "Security!*[System[(EventID=4739 or EventID=4740 or EventID=4754 or EventID=4755 or EventID=4756 or EventID=4767)]]",
+  "Security!*[System[(EventID=4799 or EventID=4825 or EventID=4946 or EventID=4948 or EventID=4956 or EventID=5024)]]",
+  "Security!*[System[(EventID=5033 or EventID=8222)]]",
+  "Microsoft-Windows-AppLocker/EXE and DLL!*[System[(EventID >= 8001 and EventID <= 8007)]]"
+]

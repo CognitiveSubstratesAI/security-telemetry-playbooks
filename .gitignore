@@ -1,0 +1,25 @@
+# Local settings and secrets
+*.local.json
+*.parameters.local.json
+.env
+.env.*
+!.env.example
+
+# Bicep build output
+*.bicepparam.json
+main.json
+*.generated.json
+
+# Pester
+testResults.xml
+coverage.xml
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini

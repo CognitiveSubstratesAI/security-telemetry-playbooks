@@ -1,0 +1,68 @@
+{
+  "location": "westeurope",
+  "kind": "Linux",
+  "properties": {
+    "dataSources": {
+      "syslog": [
+        {
+          "name": "authBaseline",
+          "streams": [
+            "Microsoft-Syslog"
+          ],
+          "facilityNames": [
+            "auth",
+            "authpriv"
+          ],
+          "logLevels": [
+            "Info",
+            "Notice",
+            "Warning",
+            "Error",
+            "Critical",
+            "Alert",
+            "Emergency"
+          ]
+        },
+        {
+          "name": "systemBaseline",
+          "streams": [
+            "Microsoft-Syslog"
+          ],
+          "facilityNames": [
+            "daemon",
+            "cron",
+            "kern",
+            "syslog"
+          ],
+          "logLevels": [
+            "Warning",
+            "Error",
+            "Critical",
+            "Alert",
+            "Emergency"
+          ]
+        }
+      ]
+    },
+    "destinations": {
+      "logAnalytics": [
+        {
+          "name": "sentinelWorkspace",
+          "workspaceResourceId": "/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.OperationalInsights/workspaces/<ws>"
+        }
+      ]
+    },
+    "dataFlows": [
+      {
+        "streams": [
+          "Microsoft-Syslog"
+        ],
+        "destinations": [
+          "sentinelWorkspace"
+        ],
+        "transformKql": "source | where not(SyslogMessage has_any ('CRON[', 'session opened for user root by (uid=0)'))",
+        "outputStream": "Microsoft-Syslog"
+      }
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+[
+  "Microsoft-Windows-Sysmon/Operational!*[System[(EventID=1 or EventID=3 or EventID=7 or EventID=8)]]",
+  "Microsoft-Windows-Sysmon/Operational!*[System[(EventID=10 or EventID=11 or EventID=22)]]",
+  "Microsoft-Windows-PowerShell/Operational!*[System[(EventID=4103 or EventID=4104)]]",
+  "Application!*[System[(Level=1 or Level=2 or Level=3)]]",
+  "System!*[System[(Level=1 or Level=2 or Level=3)]]"
+]
