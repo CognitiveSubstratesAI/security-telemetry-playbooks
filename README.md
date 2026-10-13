@@ -4,7 +4,7 @@ Working playbooks for the data layer of detection: getting logs off hosts and ap
 
 Each playbook is written to be used rather than read once — exact table names, real limits, the traps that cost days, and the control mappings a regulated organisation has to produce anyway.
 
-**Playbook 01 reads best as a page:** [https://claude.ai/artifact/W47RV4WktEDwEbwofxtc1H](https://claude.ai/artifact/W47RV4WktEDwEbwofxtc1H) — the same content, navigable, with the diagrams inline.
+**Playbook 01 reads best as a page:** [https://cognitivesubstratesai.github.io/security-telemetry-playbooks/](https://cognitivesubstratesai.github.io/security-telemetry-playbooks/) — the same content, navigable, with the diagrams inline.
 
 | # | Playbook | Covers |
 | --- | --- | --- |
