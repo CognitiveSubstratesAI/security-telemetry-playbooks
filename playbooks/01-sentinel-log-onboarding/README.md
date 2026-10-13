@@ -1,7 +1,5 @@
 # Onboarding security logs to Microsoft Sentinel: Windows, Linux, on-prem
 
-Oct 13, 2026 · @Shivaji
-
 Every Windows and Linux log source reaching Microsoft Sentinel today goes through the same two objects — the Azure Monitor Agent and a Data Collection Rule — whether the machine sits in Azure, in your data centre, or in another cloud. This playbook covers the collection paths, the filtering and cost decisions, how to prove a source is actually complete, and how each setting maps to CIS, MCSB and DORA.
 
 ## Choosing the collection path
