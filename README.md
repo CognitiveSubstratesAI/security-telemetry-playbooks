@@ -4,6 +4,8 @@ Working playbooks for the data layer of detection: getting logs off hosts and ap
 
 Each playbook is written to be used rather than read once — exact table names, real limits, the traps that cost days, and the control mappings a regulated organisation has to produce anyway.
 
+**Playbook 01 reads best as a page:** [https://claude.ai/artifact/W47RV4WktEDwEbwofxtc1H](https://claude.ai/artifact/W47RV4WktEDwEbwofxtc1H) — the same content, navigable, with the diagrams inline.
+
 | # | Playbook | Covers |
 | --- | --- | --- |
 | 01 | [Sentinel log onboarding](playbooks/01-sentinel-log-onboarding/) | Windows, Linux and on-prem into Microsoft Sentinel. Azure Monitor Agent, DCRs as code, ASIM and OCSF field mapping, enrichment, cost, completeness, and mappings to CIS v8.1, the Microsoft cloud security benchmark, MITRE ATT&CK and DORA. Includes optional [Logstash and Beats](playbooks/01-sentinel-log-onboarding/logstash-and-beats.md) and [Cribl Stream and Edge](playbooks/01-sentinel-log-onboarding/cribl-stream-and-edge.md) collection paths. |
